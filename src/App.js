@@ -51,9 +51,11 @@ function App() {
         variables: {
           id: id
         },
-        refetchQueries: [
-          refetchData()
-        ]
+        update: cache => {
+          const prevData = cache.readQuery(refetchData())
+          const updatedData = prevData.data.filter(item => item.id !== id)
+          cache.writeQuery({ query: GET_DATA , data: {data: updatedData}})
+        }
       })
     }
   }
