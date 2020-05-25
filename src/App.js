@@ -9,7 +9,9 @@ function App() {
 
   const { data, loading, error } = useQuery(GET_DATA)
   const [toggleData] = useMutation(TOGGLE_DATA)
-  const [newData] = useMutation(ADD_DATA)
+  const [newData] = useMutation(ADD_DATA, {
+    onCompleted: () => setNewText('')
+  })
   const [removedData] = useMutation(DELETE_DATA)
 
 
@@ -39,18 +41,21 @@ function App() {
         refetchData()
       ]
     })
-    setNewText('')
   }
 
-  async function handleDelete({id}) {
-    await removedData({
-      variables: {
-        id: id
-      },
-      refetchQueries: [
-        refetchData()
-      ]
-    })
+  async function handleDelete({ id }) {
+    const isConfirmed = window.confirm("Do you want to remove?")
+
+    if (isConfirmed) {
+      await removedData({
+        variables: {
+          id: id
+        },
+        refetchQueries: [
+          refetchData()
+        ]
+      })
+    }
   }
 
 
