@@ -44,7 +44,7 @@ const [newText, setNewText] = React.useState('')
   const [newData] = useMutation(ADD_DATA)
 
   async function handleToggleData({id, done}) {
-    const datas = await toggleData({
+  await toggleData({
       variables: {
         id: id,
         done: !done
@@ -54,10 +54,16 @@ const [newText, setNewText] = React.useState('')
 
   async function addNewData(e) {
     e.preventDefault();
+
+    if (!newText.trim()) return;
+
     await newData({
       variables: {
         text: newText
-      }
+      },
+      refetchQueries: [
+        {query: GET_DATA}
+      ]
     })
     setNewText('')
   }
